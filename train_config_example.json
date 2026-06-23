@@ -1,0 +1,22 @@
+{
+  "train_data": "exampledata/example_train.jsonl",
+  "vocab": "exampledata/example_vocab.json",
+  "symbols": "exampledata/example_symbols.json",
+  "out": "models/example_stock_map.pt",
+  "epochs": 2,
+  "batch_size": 2,
+  "lr": 0.0001,
+  "weight_decay": 0.01,
+  "grad_clip_norm": 1.0,
+  "val_fraction": 0.15,
+  "seed": 42,
+  "num_workers": 0,
+  "n_symbols": 40,
+  "d_model": 1024,
+  "input_rank": 64,
+  "n_blocks": 4,
+  "ffn_dim": 2944,
+  "dropout": 0.1,
+  "apply_signed_log1p": true,
+  "neutral_weight": null
+}

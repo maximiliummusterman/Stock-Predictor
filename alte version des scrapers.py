@@ -8,6 +8,7 @@ import json
 import tqdm
 import requests
 import multiprocessing
+import datetime
 
 wörter_ind = []
 context = ssl.create_default_context(cafile=certifi.where())
@@ -84,7 +85,13 @@ def get_unwichtigelinks():
             for i in row:
                 unwichtigelinks.append(i)
 
-def scrape_link(urlf):
+
+
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
+def scrape_link2(urlf):
     links = []
     
     
@@ -106,10 +113,57 @@ def scrape_link(urlf):
             spamwriter = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow(links)
 
+def scrape_link(urlf):
+    links = []
+    
+    # 1. Nutze einen echten Browser-Header, sonst wirst du geblockt
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+    }
+
+    try:
+        response = requests.get(urlf, headers=headers, timeout=10)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")
+            
+            # Diese Funktionen sollten besser AUSSERHALB der Schleife geladen werden (Performance)
+            get_keinegewichtungen()
+            get_unwichtigelinks()
+
+            for link in soup.find_all("a"):
+                href = link.get("href", "")
+                
+                # 2. Relative Links zu absoluten Links umwandeln
+                # Macht aus "/sport/article..." -> "https://www.welt.de/sport/article..."
+                full_url = urljoin("https://www.welt.de", href)
+
+                # 3. Logik korrigieren: 
+                # Wir wollen nur Links, die "article" enthalten und auf welt.de bleiben
+                if "article" in full_url and "www.welt.de" in full_url:
+                    if linkchecker(full_url) and not full_url.endswith(".pdf"):
+                        if full_url not in url:
+                            links.append(full_url)
+            
+            # Globalen Listen hinzufügen
+            links_des_tages.extend(links) 
+            
+            print(f"{len(links)} Links gefunden!")
+            
+            # In CSV speichern
+            with open('links.csv', 'a', newline='') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                if links:
+                    spamwriter.writerow(links)
+        else:
+            print(f"Fehler: Status Code {response.status_code}")
+    except Exception as e:
+        print(f"Fehler beim Scrapen: {e}")
+
+
 def links_aufrufen(url):
     rwörter = []
 
-    if requests.get(url).status_code == 200:
+    if 1==1 or requests.get(url).status_code == 200:
     
         page = urlopen(url, context=context)
         html = page.read().decode("utf-8")

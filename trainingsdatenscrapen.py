@@ -23,9 +23,7 @@ unwichtigelinks = []
 links_des_tages = []
 anzahlen = {}
 
-def wörter_in_json_speichern(wörter, dateiname):
-    with open(dateiname, 'w') as f:
-        json.dump(wörter, f, ensure_ascii=False, indent=4)
+
 
 def get_anzahlen(quelle):
     with open(quelle, 'r') as f:
@@ -192,8 +190,8 @@ with open("indexe.json", "r") as f:
 
 
 for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
-    start_datum = datetime.date(2023, 1, 1)
-    end_datum = datetime.date(2023, 1, 7)
+    start_datum = datetime.date(2023, 1, 3)
+    end_datum = datetime.date(2023, 1, 9)
     delta_ein_tag = datetime.timedelta(days=1)
     delta_eine_woche = datetime.timedelta(days=7)   
 
@@ -205,20 +203,17 @@ for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
         jahr = aktuelles_datum.year
         print("b")
         if tagesvalidation(jahr, monat, tag) and tagesvalidation(jahr, monat, tag + 1):
-            for i in tqdm.tqdm(range(6), desc="Verarbeitung läuft"):
-                print("c")
-                datum_vor_neu = aktuelles_datum - delta_ein_tag*(i + 1)
-                tag_neu = datum_vor_neu.day
-                monat_neu = datum_vor_neu.month
-                jahr_neu = datum_vor_neu.year
-                scrape_link(f"https://www.welt.de/schlagzeilen/nachrichten-vom-{jahr_neu}-{monat_neu}-{tag_neu}.html")
-                print(links_des_tages)
-                for i in links_des_tages:
-                    links_aufrufen(i)
-                sortieren()    
+            
+            scrape_link(f"https://www.welt.de/schlagzeilen/nachrichten-vom-{jahr}-{monat}-{tag}.html")
+            print(links_des_tages)
+            for i in links_des_tages:
+                links_aufrufen(i)
+            sortieren()  
+            print("aktuelles Datum: " + str(aktuelles_datum))  
             pct_change = get_performance(w, aktuelles_datum.strftime("%Y-%m-%d"), (aktuelles_datum + delta_ein_tag).strftime("%Y-%m-%d"))
-            wörter_in_json_speichern({datum_vor_neu : {w: pct_change}}, f"aktienkursänderungen.json")
-            print(f"Die Performance von {w} zwischen {start_datum} und {end_datum} betrug: {pct_change:.2f}%")
+            with open("aktienkursänderungen.json", "a") as f:
+                f.write(json.dumps({str(aktuelles_datum): {w: pct_change}}, ensure_ascii=False))
+            #print(f"Die Performance von {w} zwischen {start_datum} und {end_datum} betrug: {pct_change:.2f}%")
 
 
 

@@ -23,6 +23,10 @@ unwichtigelinks = []
 links_des_tages = []
 anzahlen = {}
 
+def wörter_in_json_speichern(wörter, dateiname):
+    with open(dateiname, 'w') as f:
+        json.dump(wörter, f, ensure_ascii=False, indent=4)
+
 def get_anzahlen(quelle):
     with open(quelle, 'r') as f:
         return json.load(f)
@@ -213,6 +217,7 @@ for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
                     links_aufrufen(i)
                 sortieren()    
             pct_change = get_performance(w, aktuelles_datum.strftime("%Y-%m-%d"), (aktuelles_datum + delta_ein_tag).strftime("%Y-%m-%d"))
+            wörter_in_json_speichern({datum_vor_neu : {w: pct_change}}, f"aktienkursänderungen.json")
             print(f"Die Performance von {w} zwischen {start_datum} und {end_datum} betrug: {pct_change:.2f}%")
 
 
@@ -232,3 +237,6 @@ for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
 #     links_aufrufen(i)
 # sortieren()
 # print(f'Die Performance von {symbol} zwischen {start} und {end} betrug: {pct_change}%')
+
+# Layout: {datum: [{wort1 : count, ...}} | {datum : {aktie 1: ptc_change, aktie 2: pct_change, ...}, datum : {aktie 1: ptc_change, aktie 2: pct_change, ...}}
+# daten: 2023-01-01 - 2025-12-12

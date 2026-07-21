@@ -1,4 +1,7 @@
 from datetime import date, timedelta
+import json
+
+anzahlen = {5 : 6, 7 : 8, 9 : 10}
 
 start_datum = date(2026, 1, 1)
 end_datum = date(2026, 12, 31)
@@ -14,4 +17,6 @@ while aktuelles_datum <= end_datum:
     
     aktuelles_datum += delta_ein_tag
 
-print 
+
+anzahlen = {key: 0 for key in anzahlen}
+print(anzahlen)

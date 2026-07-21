@@ -21,6 +21,11 @@ threads = []
 keinegewichtungen = []
 unwichtigelinks = []
 links_des_tages = []
+anzahlen = {}
+
+def get_anzahlen(quelle):
+    with open(quelle, 'r') as f:
+        return json.load(f)
 
 def get_performance(ticker_symbol, start_date, end_date):
     # Daten herunterladen
@@ -158,8 +163,9 @@ def links_aufrufen(url):
             f.write(json.dumps({url: rwörter}, ensure_ascii=False) + "\n")
 
 def sortieren():
-    anzahlen = {}
     wörter = []
+    anzahlen = get_anzahlen('anzahlen.json')
+    
 
     with open('found_words.json', 'r') as f:
         for line in tqdm.tqdm(f, desc="Datei wird gelesen"):
@@ -185,7 +191,7 @@ for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
     start_datum = datetime.date(2023, 1, 1)
     end_datum = datetime.date(2023, 1, 7)
     delta_ein_tag = datetime.timedelta(days=1)
-    delta_eine_woche = datetime.timedelta(days=7)
+    delta_eine_woche = datetime.timedelta(days=7)   
 
     aktuelles_datum = start_datum
     print("a")

@@ -34,7 +34,7 @@ import torch
 from torch.utils.data import DataLoader, Dataset, random_split
 from tqdm import tqdm
 
-from stock_map_model import (
+from Model.stock_map_model import (
     StockMAPConfig,
     StockMovementMAP,
     count_parameters,

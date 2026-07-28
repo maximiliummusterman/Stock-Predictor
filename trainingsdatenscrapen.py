@@ -164,7 +164,7 @@ def links_aufrufen(url):
         with open("found_words.json", "a") as f:
             f.write(json.dumps({url: rwörter}, ensure_ascii=False) + "\n")
 
-def sortieren():
+def sortieren(datum : str):
     wörter = []
     anzahlen = get_anzahlen('anzahlen.json')
     
@@ -180,7 +180,7 @@ def sortieren():
 
     anzahlen = dict(sorted(anzahlen.items(), key=lambda item: item[1]))
 
-    with open('anzahlen.json', 'w') as f:
+    with open(f'Rohdaten/anzahlen_{datum}.json', 'w') as f:
         json.dump(anzahlen, f)
 
 
@@ -197,6 +197,7 @@ for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
 
     aktuelles_datum = start_datum
     print("a")
+
     while aktuelles_datum <= end_datum:
         tag = aktuelles_datum.day
         monat = aktuelles_datum.month
@@ -208,11 +209,17 @@ for w in tqdm.tqdm(wörter_ind, desc="Verarbeitung läuft"):
             print(links_des_tages)
             for i in links_des_tages:
                 links_aufrufen(i)
-            sortieren()  
+            sortieren(str(aktuelles_datum))  
             print("aktuelles Datum: " + str(aktuelles_datum))  
             pct_change = get_performance(w, aktuelles_datum.strftime("%Y-%m-%d"), (aktuelles_datum + delta_ein_tag).strftime("%Y-%m-%d"))
             with open("aktienkursänderungen.json", "a") as f:
                 f.write(json.dumps({str(aktuelles_datum): {w: pct_change}}, ensure_ascii=False))
+            with open("found_words.json", "w") as f:
+                f.write(json.dumps({}, ensure_ascii=False))
+            with open("links.csv", "w") as f:
+                f.write(json.dumps([], ensure_ascii=False))
+            with open("anzahlen.json", "w") as f:
+                f.write(json.dumps({}, ensure_ascii=False)) 
             #print(f"Die Performance von {w} zwischen {start_datum} und {end_datum} betrug: {pct_change:.2f}%")
 
 

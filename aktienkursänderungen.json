@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {"datum": "2019-01-03", "ticker": "ADS.DE", "pct_change": null}
 {"datum": "2019-01-03", "ticker": "AIR.DE", "pct_change": null}
 {"datum": "2019-01-03", "ticker": "ALV.DE", "pct_change": null}
@@ -5386,3 +5387,5 @@
 {"datum": "2019-08-27", "ticker": "MRK.DE", "pct_change": null}
 {"datum": "2019-08-27", "ticker": "MTX.DE", "pct_change": null}
 {"datum": "2019-08-27", "ticker": "MUV2.DE", "pct_change": null}
+=======
+>>>>>>> 6e3b83d212cbed692cb5f0d7a489790448e9ab9d
